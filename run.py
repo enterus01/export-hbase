@@ -66,6 +66,7 @@ def callAPI(start_time, end_time):
     except Exception as e:
         logging.error("ID: {} - Request GeoMesa API error. Please check stack trace".format(id_session))
         logging.exception(e)
+        print("--- %s seconds in step ---" % (time.time() - starttime))
 
 
 if __name__ == "__main__":
