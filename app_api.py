@@ -1,13 +1,8 @@
 from fastapi import FastAPI, Depends
-from console_logging.console import Console
-import requests
 import auth, functions
 from fastapi.security.api_key import APIKey
 from pydantic import BaseModel
-import time
 
-
-console = Console()
 app = FastAPI()
 
 class param(BaseModel):
