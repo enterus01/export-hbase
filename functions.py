@@ -20,7 +20,7 @@ logging.basicConfig(
 console = Console()
 
 backend_url = "internal-pipeline-geoserver.applications"
-backend_port: 8080
+backend_port: "8080"
 
 def convert_size(size_bytes):
    if size_bytes == 0:
