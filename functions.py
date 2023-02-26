@@ -4,6 +4,7 @@ import sys
 import time
 from console_logging.console import Console
 import requests
+import json
 
 date_strftime_format = "%Y-%m-%d %H:%M:%S"
 message_format = "%(asctime)s.%(msecs)05d - %(levelname)s - %(message)s"
@@ -51,7 +52,7 @@ async def geo_nocount2(CQL_FILTER: str):
         'Authorization': 'Basic YWRtaW46Z2Vvc2VydmVy'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-        # result = json.loads(response.text)
+        result = json.loads(response.text)
         # result = response.text
         size_temp = len(response.text)
         size = convert_size(size_temp)

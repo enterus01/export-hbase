@@ -28,7 +28,7 @@ def process_data(start_time, end_time):
 def main():
     # Get the input date from the user
     # input_date_str = input("Enter a date (yyyy-mm-dd): ")
-    input_date_str = "2022-02-20"
+    input_date_str = "2022-02-19"
     input_date = datetime.strptime(input_date_str, "%Y-%m-%d")
 
     # Split the day into 5-minute intervals
