@@ -20,7 +20,7 @@ logging.basicConfig(
 console = Console()
 
 
-async def convert_size(size_bytes):
+def convert_size(size_bytes):
    if size_bytes == 0:
        return "0B"
    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
@@ -29,7 +29,7 @@ async def convert_size(size_bytes):
    s = round(size_bytes / p, 2)
    return "%s %s" % (s, size_name[i])
 
-async def geo_nocount(CQL_FILTER: str):
+def geo_nocount(CQL_FILTER: str):
     try:
         url = "http://internal-pipeline-geoserver.applications:8080/geoserver/omi/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=application/json&exceptions=application/json&propertyName=mmsi,status,turn,speed,accuracy,lat,lon,course,heading,maneuver,raim,radio,vessel_type,vessel_name,call_sign,imo,eta,draught,destination,ais_version,md_datetime,md_ds,md_sds,pos_ds,pos_sds,dte,dtg,geom&typeName=omi:ais-enriched-archive&CQL_FILTER={}".format(CQL_FILTER)
         payload={}
@@ -43,7 +43,7 @@ async def geo_nocount(CQL_FILTER: str):
     except Exception as e:
         logging.exception(e)
 
-async def geo_nocount2(CQL_FILTER: str):
+def geo_nocount2(CQL_FILTER: str):
     try:
         start_time = time.time()
         url = "http://internal-pipeline-geoserver.applications:8080/geoserver/omi/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=application/json&exceptions=application/json&propertyName=mmsi,status,turn,speed,accuracy,lat,lon,course,heading,maneuver,raim,radio,vessel_type,vessel_name,call_sign,imo,eta,draught,destination,ais_version,md_datetime,md_ds,md_sds,pos_ds,pos_sds,dte,dtg,geom&typeName=omi:ais-enriched-archive&CQL_FILTER={}".format(CQL_FILTER)
@@ -65,7 +65,7 @@ async def geo_nocount2(CQL_FILTER: str):
     except Exception as e:
         logging.exception(e)
 
-async def geo(count: int, CQL_FILTER: str):
+def geo(count: int, CQL_FILTER: str):
     try:
         url = "http://internal-pipeline-geoserver.applications:8080/geoserver/omi/ows?service=WFS&version=2.0.0&request=GetFeature&count={}&outputFormat=application/json&exceptions=application/json&propertyName=mmsi,status,turn,speed,accuracy,lat,lon,course,heading,maneuver,raim,radio,vessel_type,vessel_name,call_sign,imo,eta,draught,destination,ais_version,md_datetime,md_ds,md_sds,pos_ds,pos_sds,dte,dtg,geom&typeName=omi:ais-enriched-archive&CQL_FILTER={}".format(count, CQL_FILTER)
         payload={}
