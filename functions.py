@@ -59,6 +59,9 @@ def geo_nocount2(CQL_FILTER: str):
         size_temp = len(response.text)
         size = convert_size(size_temp)
         duration = (time.time() - start_time)
+        stringdata = json.dumps(result).encode('utf8')
+        with open("test.json", "w") as json_file:
+            json_file.write(stringdata.decode('utf8'))
         return {
                 "size": size,
                 "duration": duration,
