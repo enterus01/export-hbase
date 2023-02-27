@@ -84,7 +84,7 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
             size = convert_size(size_temp)
             duration = (time.time() - start_time)
             logging.info("Start Json Dumps")
-            stringdata = json.dumps(result).encode('utf8')
+            stringdata = json.dumps(result)
             logging.info("Done Json Dumps")
             convert_string_CQL_FILTER = CQL_FILTER.replace("/","-")
             file_json = "{}-{}-{}-{}.json".format(_year,_month,_day, convert_string_CQL_FILTER)
@@ -95,7 +95,7 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
             
             logging.info("Start wirte to json file")
             with open(full_path_json, "w") as json_file:
-                json_file.write(stringdata.decode('utf8'))
+                json_file.write(stringdata)
             
             logging.info("Start compress to gz file")
             with open(full_path_json, "rb") as f_in:
