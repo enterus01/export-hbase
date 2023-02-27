@@ -25,6 +25,6 @@ async def fetch_data(CQL_FILTER: str ,api_key: APIKey = Depends(auth.get_api_key
     return result
 
 @app.get("/geo_nocount2")
-async def fetch_data(CQL_FILTER: str ,api_key: APIKey = Depends(auth.get_api_key)):
-    result = functions.geo_nocount2(CQL_FILTER)
+async def fetch_data(CQL_FILTER: str, _year: int, _month: int, _day: int, api_key: APIKey = Depends(auth.get_api_key)):
+    result = functions.geo_nocount2(CQL_FILTER, _year, _month, _day)
     return result
