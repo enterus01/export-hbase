@@ -74,36 +74,43 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
         'Authorization': 'Basic YWRtaW46Z2Vvc2VydmVy'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-        # result = json.loads(response.text)
-        result = json.loads(response.text)
-        size_temp = len(response.text)
-        size = convert_size(size_temp)
-        duration = (time.time() - start_time)
-        stringdata = json.dumps(result).encode('utf8')
-        convert_string_CQL_FILTER = CQL_FILTER.replace("/","-")
-        file_json = "{}-{}-{}-{}.json".format(_year,_month,_day, convert_string_CQL_FILTER)
-        file_gz = "{}-{}-{}-{}.gz".format(_year,_month,_day, convert_string_CQL_FILTER)
-        full_path_json = "./" + file_json
-        full_path_gz = "./" + file_gz
-        path_blob = "vessel_position/data_exported/hbase/" + _year + "/" + _month + "/" + _day+ "/" + file_gz
-        
+        if response.status_code == 200:
+            logging.info("Start Json Loads")
+            result = json.loads(response.text)
+            logging.info("Done Json Loads")
+            size_temp = len(response.text)
+            size = convert_size(size_temp)
+            duration = (time.time() - start_time)
+            logging.info("Start Json Dumps")
+            stringdata = json.dumps(result).encode('utf8')
+            logging.info("Done Json Dumps")
+            convert_string_CQL_FILTER = CQL_FILTER.replace("/","-")
+            file_json = "{}-{}-{}-{}.json".format(_year,_month,_day, convert_string_CQL_FILTER)
+            file_gz = "{}-{}-{}-{}.gz".format(_year,_month,_day, convert_string_CQL_FILTER)
+            full_path_json = "./" + file_json
+            full_path_gz = "./" + file_gz
+            path_blob = "vessel_position/data_exported/hbase/" + _year + "/" + _month + "/" + _day+ "/" + file_gz
+            
+            logging.info("Start wirte to json file")
+            with open(full_path_json, "w") as json_file:
+                json_file.write(stringdata.decode('utf8'))
+            
+            logging.info("Start compress to gz file")
+            with open(full_path_json, "rb") as f_in:
+                with gzip.open(full_path_gz, "wb") as f_out:
+                    f_out.write(f_in.read())
+            logging.info("Done compress to gz file")
+            logging.info("Start upload to azure")
+            uploadToBlobStorage(full_path_gz,path_blob)
+            logging.info("Done upload to azure")
+            os.remove(full_path_json)
+            os.remove(full_path_gz)    
 
-        with open(full_path_json, "w") as json_file:
-            json_file.write(stringdata.decode('utf8'))
-        
-
-        with open(full_path_json, "rb") as f_in:
-            with gzip.open(full_path_gz, "wb") as f_out:
-                f_out.write(f_in.read())
-        uploadToBlobStorage(full_path_gz,path_blob)
-        os.remove(full_path_json)
-        os.remove(full_path_gz)    
-
-        return {
-                "size": size,
-                "duration": duration,
-                "url": CQL_FILTER
-                }
+            return {
+                    "size": size,
+                    "duration": duration,
+                    "url": CQL_FILTER
+                    }
     except Exception as e:
         logging.exception(e)
 
