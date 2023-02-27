@@ -65,7 +65,7 @@ def geo_nocount(CQL_FILTER: str):
     except Exception as e:
         logging.exception(e)
 
-def geo_nocount2(CQL_FILTER: str, _year: int, _month: int, _day: int):
+def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
     try:
         start_time = time.time()
         url = "http://internal-pipeline-geoserver.applications:8080/geoserver/omi/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=application/json&exceptions=application/json&propertyName=mmsi,status,turn,speed,accuracy,lat,lon,course,heading,maneuver,raim,radio,vessel_type,vessel_name,call_sign,imo,eta,draught,destination,ais_version,md_datetime,md_ds,md_sds,pos_ds,pos_sds,dte,dtg,geom&typeName=omi:ais-enriched-archive&CQL_FILTER={}".format(CQL_FILTER)
@@ -80,8 +80,9 @@ def geo_nocount2(CQL_FILTER: str, _year: int, _month: int, _day: int):
         size = convert_size(size_temp)
         duration = (time.time() - start_time)
         stringdata = json.dumps(result).encode('utf8')
-        file_json = "{}-{}-{}.json".format(_year,_month,_day)
-        file_gz = "{}-{}-{}.gz".format(_year,_month,_day)
+        convert_string_CQL_FILTER = CQL_FILTER.replace("/","-")
+        file_json = "{}-{}-{}-{}.json".format(_year,_month,_day, convert_string_CQL_FILTER)
+        file_gz = "{}-{}-{}-{}.gz".format(_year,_month,_day, convert_string_CQL_FILTER)
         full_path_json = "./" + file_json
         full_path_gz = "./" + file_gz
         path_blob = "vessel_position/data_exported/hbase/" + _year + "/" + _month + "/" + _day+ "/" + file_gz
