@@ -8,6 +8,8 @@ import json
 import gzip
 from azure.storage.blob import BlobServiceClient
 import os
+from fastapi import HTTPException
+from starlette.status import HTTP_403_FORBIDDEN
 
 
 date_strftime_format = "%Y-%m-%d %H:%M:%S"
@@ -111,6 +113,11 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
                     "duration": duration,
                     "url": CQL_FILTER
                     }
+        else:
+                raise HTTPException(
+            status_code=HTTP_403_FORBIDDEN, detail="Something error!"
+        )
+
     except Exception as e:
         logging.exception(e)
 
