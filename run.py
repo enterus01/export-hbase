@@ -40,7 +40,7 @@ def main():
         time_range.append((start_time, start_time + interval))
         start_time += interval
     # Run the processing function in 6 threads
-    with ThreadPoolExecutor(max_workers=4) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:
         for start, end in time_range:
             executor.submit(callAPI, start, end)
 
