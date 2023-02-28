@@ -55,15 +55,27 @@ def uploadToBlobStorage(file_path,file_name):
 
 def geo_nocount(CQL_FILTER: str):
     try:
+        start_time = time.time()
         url = "http://internal-pipeline-geoserver.applications:8080/geoserver/omi/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=application/json&exceptions=application/json&propertyName=mmsi,status,turn,speed,accuracy,lat,lon,course,heading,maneuver,raim,radio,vessel_type,vessel_name,call_sign,imo,eta,draught,destination,ais_version,md_datetime,md_ds,md_sds,pos_ds,pos_sds,dte,dtg,geom&typeName=omi:ais-enriched-archive&CQL_FILTER={}".format(CQL_FILTER)
         payload={}
         headers = {
         'Authorization': 'Basic YWRtaW46Z2Vvc2VydmVy'
         }
         response = requests.request("GET", url, headers=headers, data=payload)
-        # result = json.loads(response.text)
-        result = response.text
-        return result
+        if response.status_code == 200:
+            size_temp = len(response.text)
+            size = convert_size(size_temp)
+            duration = (time.time() - start_time)
+            return {
+                    "size": size,
+                    "duration": duration,
+                    "url": CQL_FILTER
+                    }
+        else:
+                raise HTTPException(
+            status_code=HTTP_403_FORBIDDEN, detail="Something error!"
+        )
+
     except Exception as e:
         logging.exception(e)
 

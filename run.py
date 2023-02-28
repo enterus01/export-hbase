@@ -40,7 +40,7 @@ def main():
         time_range.append((start_time, start_time + interval))
         start_time += interval
     # Run the processing function in 6 threads
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=4) as executor:
         for start, end in time_range:
             executor.submit(callAPI, start, end)
 
@@ -50,7 +50,7 @@ def callAPI(start_time, end_time):
     try:
         id_session = uuid.uuid4()
         logging.info("ID: {} - Requesting GeoMesa API: range time from {} to {}".format(id_session,startT,endT))
-        url = "http://20.236.233.187:8080/geo_nocount2?CQL_FILTER=(dtg+during+{}/{})".format(startT,endT)
+        url = "http://20.236.233.187:8080/geo_nocount?CQL_FILTER=(dtg+during+{}/{})".format(startT,endT)
 
         payload={}
         headers = {
