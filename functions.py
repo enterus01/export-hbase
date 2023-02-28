@@ -10,6 +10,7 @@ from azure.storage.blob import BlobServiceClient
 import os
 from fastapi import HTTPException
 from starlette.status import HTTP_403_FORBIDDEN
+import uuid
 
 
 date_strftime_format = "%Y-%m-%d %H:%M:%S"
@@ -81,6 +82,7 @@ def geo_nocount(CQL_FILTER: str):
 
 def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
     try:
+        id_session = uuid()
         start_time = time.time()
         url = "http://internal-pipeline-geoserver.applications:8080/geoserver/omi/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=application/json&exceptions=application/json&propertyName=mmsi,status,turn,speed,accuracy,lat,lon,course,heading,maneuver,raim,radio,vessel_type,vessel_name,call_sign,imo,eta,draught,destination,ais_version,md_datetime,md_ds,md_sds,pos_ds,pos_sds,dte,dtg,geom&typeName=omi:ais-enriched-archive&CQL_FILTER={}".format(CQL_FILTER)
         payload={}
@@ -89,15 +91,15 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
         }
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
-            logging.info("Start Json Loads")
+            logging.info("ID: {} - Start Json Loads".format(id_session))
             result = json.loads(response.text)
-            logging.info("Done Json Loads")
+            logging.info("ID: {} - Done Json Loads".format(id_session))
             size_temp = len(response.text)
             size = convert_size(size_temp)
             duration = (time.time() - start_time)
-            logging.info("Start Json Dumps")
+            logging.info("ID: {} - Start Json Dumps".format(id_session))
             stringdata = json.dumps(result)
-            logging.info("Done Json Dumps")
+            logging.info("ID: {} - Done Json Dumps".format(id_session))
             convert_string_CQL_FILTER = CQL_FILTER.replace("/","-")
             file_json = "{}-{}-{}-{}.json".format(_year,_month,_day, convert_string_CQL_FILTER)
             file_gz = "{}-{}-{}-{}.gz".format(_year,_month,_day, convert_string_CQL_FILTER)
@@ -105,18 +107,18 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
             full_path_gz = "./" + file_gz
             path_blob = "vessel_position/data_exported/hbase/" + _year + "/" + _month + "/" + _day+ "/" + file_gz
             
-            logging.info("Start wirte to json file")
+            logging.info("ID: {} - Start wirte to json file".format(id_session))
             with open(full_path_json, "w") as json_file:
                 json_file.write(stringdata)
             
-            logging.info("Start compress to gz file")
+            logging.info("ID: {} - Start compress to gz file".format(id_session))
             with open(full_path_json, "rb") as f_in:
                 with gzip.open(full_path_gz, "wb") as f_out:
                     f_out.write(f_in.read())
-            logging.info("Done compress to gz file")
-            logging.info("Start upload to azure")
+            logging.info("ID: {} - Done compress to gz file".format(id_session))
+            logging.info("ID: {} - Start upload to azure".format(id_session))
             uploadToBlobStorage(full_path_gz,path_blob)
-            logging.info("Done upload to azure")
+            logging.info("ID: {} - Done upload to azure".format(id_session))
             os.remove(full_path_json)
             os.remove(full_path_gz)    
 
