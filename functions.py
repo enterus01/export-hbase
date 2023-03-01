@@ -134,10 +134,11 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
                     }
         else:
                 raise HTTPException(
-            status_code=HTTP_403_FORBIDDEN, detail="Something error!"
+            status_code=HTTP_403_FORBIDDEN, detail="Something error with range {}!".format(CQL_FILTER)
         )
 
     except Exception as e:
+        logging.error("Something error with range {}!".format(CQL_FILTER))
         logging.exception(e)
 
 
