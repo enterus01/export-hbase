@@ -48,7 +48,7 @@ def uploadToBlobStorage(file_path,file_name):
    blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name)
    with open(file_path,'rb') as data:
       blob_client.upload_blob(data,overwrite=True)
-      print(f'Uploaded {file_name}.')
+      logging.info(f'Uploaded {file_name}')
 
 # calling a function to perform upload
 
@@ -101,7 +101,11 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
             logging.info("ID: {} - Start Json Dumps".format(id_session))
             stringdata = json.dumps(result)
             logging.info("ID: {} - Done Json Dumps".format(id_session))
-            convert_string_CQL_FILTER = CQL_FILTER.replace("/","-")
+            convert_string_CQL_FILTER = CQL_FILTER.replace("/","_")
+            convert_string_CQL_FILTER = convert_string_CQL_FILTER.replace("(dtg during ","_")
+            convert_string_CQL_FILTER = convert_string_CQL_FILTER.replace(")","")
+            convert_string_CQL_FILTER = convert_string_CQL_FILTER.replace("-","_")
+            convert_string_CQL_FILTER = convert_string_CQL_FILTER.replace(":","_")
             file_json = "{}-{}-{}-{}.json".format(_year,_month,_day, convert_string_CQL_FILTER)
             file_gz = "{}-{}-{}-{}.gz".format(_year,_month,_day, convert_string_CQL_FILTER)
             full_path_json = "./" + file_json
