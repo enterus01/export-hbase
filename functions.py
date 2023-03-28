@@ -92,15 +92,15 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
         }
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.status_code == 200:
-            logging.info("ID: {} - Start Json Loads".format(id_session))
+            # logging.info("ID: {} - Start Json Loads".format(id_session))
             result = json.loads(response.text)
-            logging.info("ID: {} - Done Json Loads".format(id_session))
+            # logging.info("ID: {} - Done Json Loads".format(id_session))
             size_temp = len(response.text)
             size = convert_size(size_temp)
             duration = (time.time() - start_time)
-            logging.info("ID: {} - Start Json Dumps".format(id_session))
+            # logging.info("ID: {} - Start Json Dumps".format(id_session))
             stringdata = json.dumps(result)
-            logging.info("ID: {} - Done Json Dumps".format(id_session))
+            # logging.info("ID: {} - Done Json Dumps".format(id_session))
             convert_string_CQL_FILTER = CQL_FILTER.replace("/","_")
             convert_string_CQL_FILTER = convert_string_CQL_FILTER.replace("(dtg during ","_")
             convert_string_CQL_FILTER = convert_string_CQL_FILTER.replace(")","")
@@ -112,21 +112,21 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
             full_path_gz = "./" + file_gz
             path_blob = "vessel_position/data_exported/hbase/" + _year + "/" + _month + "/" + _day+ "/" + file_gz
             
-            logging.info("ID: {} - Start wirte to json file".format(id_session))
+            # logging.info("ID: {} - Start wirte to json file".format(id_session))
             with open(full_path_json, "w") as json_file:
                 json_file.write(stringdata)
             
-            logging.info("ID: {} - Start compress to gz file".format(id_session))
+            # logging.info("ID: {} - Start compress to gz file".format(id_session))
             with open(full_path_json, "rb") as f_in:
                 with gzip.open(full_path_gz, "wb") as f_out:
                     f_out.write(f_in.read())
-            logging.info("ID: {} - Done compress to gz file".format(id_session))
-            logging.info("ID: {} - Start upload to azure".format(id_session))
+            # logging.info("ID: {} - Done compress to gz file".format(id_session))
+            # logging.info("ID: {} - Start upload to azure".format(id_session))
             uploadToBlobStorage(full_path_gz,path_blob)
-            logging.info("ID: {} - Done upload to azure".format(id_session))
+            # logging.info("ID: {} - Done upload to azure".format(id_session))
             os.remove(full_path_json)
             os.remove(full_path_gz)    
-
+            # logging.info("ID: {} - Done process request range {}".format(id_session, CQL_FILTER))
             return {
                     "size": size,
                     "duration": duration,
