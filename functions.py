@@ -16,7 +16,7 @@ import uuid
 date_strftime_format = "%Y-%m-%d %H:%M:%S"
 message_format = "%(asctime)s.%(msecs)05d - %(levelname)s - %(message)s"
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     format= message_format, datefmt = date_strftime_format,
     handlers=[
 #         logging.FileHandler("{:%Y-%m-%d}.log".format(datetime.now())),
@@ -48,7 +48,7 @@ def uploadToBlobStorage(file_path,file_name):
    blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name)
    with open(file_path,'rb') as data:
       blob_client.upload_blob(data,overwrite=True)
-      logging.info(f'Uploaded {file_name}')
+      logging.warning(f'Uploaded {file_name}')
 
 # calling a function to perform upload
 
@@ -84,7 +84,7 @@ def geo_nocount2(CQL_FILTER: str, _year: str, _month: str, _day: str):
     try:
         id_session = uuid.uuid4()
         start_time = time.time()
-        logging.info("ID: {} - Start request range {}".format(id_session, CQL_FILTER))
+        logging.warning("ID: {} - Start request range {}".format(id_session, CQL_FILTER))
         url = "http://internal-pipeline-geoserver.applications:8080/geoserver/omi/ows?service=WFS&version=2.0.0&request=GetFeature&outputFormat=application/json&exceptions=application/json&propertyName=mmsi,status,turn,speed,accuracy,lat,lon,course,heading,maneuver,raim,radio,vessel_type,vessel_name,call_sign,imo,eta,draught,destination,ais_version,md_datetime,md_ds,md_sds,pos_ds,pos_sds,dte,dtg,geom&typeName=omi:ais-enriched-archive&CQL_FILTER={}".format(CQL_FILTER)
         payload={}
         headers = {
